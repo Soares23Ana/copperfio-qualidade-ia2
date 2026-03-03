@@ -1,4 +1,4 @@
-# 🚀 Sistema de Qualidade e Vendas - Copperfio
+#  Sistema de Qualidade e Vendas - Copperfio
 
 Este repositório contém o código-fonte e a documentação da ferramenta interna da equipe de Qualidade e Vendas da Copperfio. O sistema utiliza Inteligência Artificial para análise de sentimento, predição de risco de perda de clientes (Churn) e auditoria visual.
 
