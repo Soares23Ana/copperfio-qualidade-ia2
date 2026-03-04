@@ -2,6 +2,15 @@
 
 Este repositório contém o código-fonte e a documentação da ferramenta interna da equipe de Qualidade e Vendas da Copperfio. O sistema utiliza Inteligência Artificial para análise de sentimento, predição de risco de perda de clientes (Churn) e auditoria visual.
 
+## Equipe 5
+* Alice dos Santos Maganhoto
+* Amanda Rodrigues Pristupa Martins 
+* Ana Júlia Gouveia Mazzi
+* Ana Luiza Soares
+* Mirian Suelen Passos
+* Hanry de Sousa
+
+
 ## 📌 Funcionalidades Principais
 
 * **IA de Análise de Sentimento Multimodal (NLP):** Processa feedbacks em texto e áudio para identificar frustrações sutis.
@@ -24,3 +33,4 @@ Este repositório contém o código-fonte e a documentação da ferramenta inter
 * `/src/web_cliente`: Interface web responsiva para o cliente (coleta de dados).
 * `/src/mobile_gestor`: Aplicativo nativo para o gestor (Dashboard e Alertas).
 * `/tests`: Testes automatizados de IA, backend e interfaces.
+
