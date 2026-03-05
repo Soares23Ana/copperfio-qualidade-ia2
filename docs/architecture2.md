@@ -1,4 +1,4 @@
-# 🏗️ Arquitetura do Sistema e Microsserviços de IA
+# Arquitetura do Sistema e Microsserviços de IA
 
 Este documento descreve a topologia do sistema de Qualidade e Vendas da Copperfio. O sistema é dividido em três camadas principais: Front-end (Interfaces), Back-end (Core API) e os Serviços de IA.
 
