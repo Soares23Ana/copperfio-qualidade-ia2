@@ -1,3 +1,4 @@
+Requisitos Funcionais (RF)
 RF01 — Login
 Permitir o acesso do usuário à sua conta através da autenticação via e-mail e senha.
 
