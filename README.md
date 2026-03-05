@@ -1,3 +1,5 @@
+# Sistema de Qualidade - Copperfil
+
 Este repositório contém a documentação do aplicativo Android desenvolvido para a empresa Coperfil, especializada na venda de cabos elétricos para empresas.
 
 O sistema tem como objetivo centralizar atendimento, reclamações, catálogo de produtos e análise de feedbacks, oferecendo uma área exclusiva para clientes e um painel gerencial com dashboards estratégicos.
