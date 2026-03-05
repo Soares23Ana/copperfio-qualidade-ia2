@@ -1,4 +1,4 @@
-Sistema de Qualidade e Atendimento - Coperfil
+### Sistema de Qualidade e Atendimento - Coperfil
 
 Este repositório contém a documentação do aplicativo Android desenvolvido para a empresa Coperfil, especializada na venda de cabos elétricos para empresas.
 
@@ -6,7 +6,7 @@ O sistema tem como objetivo centralizar atendimento, reclamações, catálogo de
 
 ⸻
 
-Equipe 5
+### Equipe 5
 	•	Alice dos Santos Maganhoto
 	•	Amanda Rodrigues Pristupa Martins
 	•	Ana Júlia Gouveia Mazzi
@@ -15,7 +15,7 @@ Equipe 5
 	•	Hanry de Sousa
 
 ⸻
- Objetivo do Projeto
+### Objetivo do Projeto
 
 Desenvolver um aplicativo Android corporativo que permita:
 	•	Melhorar o relacionamento com clientes
@@ -26,7 +26,7 @@ Desenvolver um aplicativo Android corporativo que permita:
 
 ⸻
 
- Estrutura do Aplicativo
+### Estrutura do Aplicativo
 
 O aplicativo será dividido em duas áreas principais:
 
@@ -45,7 +45,7 @@ Essa área permite que o cliente registre sua experiência e acompanhe o relacio
 
 ⸻
 
-Área do Gestor
+### Área do Gestor
 
 Área restrita para usuários com perfil de gestão.
 
@@ -60,14 +60,14 @@ O objetivo dessa área é fornecer visão estratégica e apoiar decisões rápid
 
 ⸻
 
-Fluxo do Usuário
+### Fluxo do Usuário
 	1.	O cliente realiza login ou cadastro no aplicativo.
 	2.	Acessa catálogo, ficha técnica ou registra uma reclamação.
 	3.	Pode avaliar produtos e enviar feedback.
 	4.	As informações são armazenadas no sistema.
 	5.	O gestor acessa o dashboard para acompanhar métricas e alertas.
 
-  Tecnologias Utilizadas
+ ### Tecnologias Utilizadas
 	•	Desenvolvimento Android
 	•	Banco de Dados para armazenamento de usuários, avaliações e chamados
 	•	Biblioteca de gráficos para dashboards
