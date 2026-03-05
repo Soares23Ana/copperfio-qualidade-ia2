@@ -28,17 +28,7 @@
 
 **US22 — Enviar Chamado Como cliente, quero enviar o chamado preenchido no sistema para que o suporte receba e inicie a tratativa da minha reclamação.**
 
-## Épico 4 — Avaliação de Experiência e Feedback
-**Descrição: Ferramentas criadas para coletar a opinião do cliente sobre a experiência de uso do aplicativo, gerando insights para melhorias contínuas.**
-
-### User Stories
-**US30 — Avaliar Experiência Como cliente, quero dar uma nota ou classificar minha experiência no app para demonstrar meu nível de satisfação.**
-
-**US31 — Enviar Feedback Como cliente, quero escrever um texto livre com meu feedback ou sugestões para ajudar a empresa a melhorar o serviço.**
-
-**US32 — Feedback Anônimo Como cliente, quero ter a opção de enviar meu feedback de forma anônima para manter minha privacidade, caso eu deseje.**
-
-## Épico 5 — Dashboard do Gestor
+## Épico 4 — Dashboard do Gestor
 **Descrição: Painel administrativo e gerencial exclusivo para a equipe interna acompanhar as solicitações dos clientes e a saúde do negócio.**
 
 ### User Stories
@@ -48,15 +38,7 @@
 
 **US42 — Analisar Feedbacks Como gestor, quero ler as avaliações e os feedbacks dos clientes no meu painel para entender o que precisa ser melhorado na operação.**
 
-## Épico 6 — Comunicação e Mural de Avisos
-**Descrição: Mecanismo de comunicação para manter a base de usuários informada sobre novidades, atualizações de sistema ou comunicados gerais.**
 
-### User Stories
-**US50 — Visualizar Avisos Como usuário, quero acessar o mural de avisos para me manter informado sobre comunicados importantes do aplicativo.**
-
-**US51 — Publicar Avisos Como gestor, quero criar e publicar novos avisos no mural para repassar informações urgentes ou novidades aos clientes.**
-
-**US52 — Gerenciar Avisos Como gestor, quero editar ou excluir avisos antigos para manter o mural sempre organizado e com informações atuais.**
 
 # Observações
 Cada épico pode ter quantas stories forem necessárias.
