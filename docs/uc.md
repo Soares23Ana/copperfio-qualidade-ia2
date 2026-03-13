@@ -54,9 +54,13 @@ Redefinir a senha de acesso após esquecimento.
 ### Fluxo Principal:
 
 1.O usuário clica em "Esqueceu a senha" e informa o e-mail.
+
 2.O sistema envia um link único para o e-mail do usuário (RN02).
+
 3.O usuário acessa o link e insere a nova senha conforme as regras de complexidade.
+
 4.O sistema valida a nova senha, atualiza o banco e invalida o link (RN03).
+
 5.O usuário é redirecionado para a tela de login.
 
 ### Fluxos Alternativos:
@@ -190,7 +194,7 @@ Monitorar métricas, feedbacks e gerir as demandas dos clientes.
 
 ### Fluxos Alternativos:
 
--** A1 — Usuário comum tenta acessar:**
+-**A1 — Usuário comum tenta acessar:**
 - O sistema bloqueia o acesso e exibe erro de permissão (RN05).
 
 ### RF Relacionados: 
