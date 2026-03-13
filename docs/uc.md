@@ -16,10 +16,14 @@ Criar uma nova conta para acessar as funcionalidades do sistema.
 ### Fluxo Principal:
 
 1. O visitante acessa a opção "Cadastrar".
-2. O visitante insere nome, e-mail e define uma senha.
-3. O sistema valida a unicidade do e-mail (RN04).
-4. O sistema valida a complexidade da senha (RN01).
-5. O sistema armazena os dados com hash de segurança e confirma o cadastro.
+   
+3. O visitante insere nome, e-mail e define uma senha.
+   
+5. O sistema valida a unicidade do e-mail (RN04).
+   
+6. O sistema valida a complexidade da senha (RN01).
+   
+9. O sistema armazena os dados com hash de segurança e confirma o cadastro.
 
 ### Fluxos Alternativos:
 
@@ -53,15 +57,15 @@ Redefinir a senha de acesso após esquecimento.
 
 ### Fluxo Principal:
 
-1.O usuário clica em "Esqueceu a senha" e informa o e-mail.
+1. O usuário clica em "Esqueceu a senha" e informa o e-mail.
 
-2.O sistema envia um link único para o e-mail do usuário (RN02).
+2. O sistema envia um link único para o e-mail do usuário (RN02).
 
-3.O usuário acessa o link e insere a nova senha conforme as regras de complexidade.
+3. O usuário acessa o link e insere a nova senha conforme as regras de complexidade.
 
-4.O sistema valida a nova senha, atualiza o banco e invalida o link (RN03).
+4. O sistema valida a nova senha, atualiza o banco e invalida o link (RN03).
 
-5.O usuário é redirecionado para a tela de login.
+5. O usuário é redirecionado para a tela de login.
 
 ### Fluxos Alternativos:
 
@@ -97,9 +101,12 @@ Avaliar a experiência de uso e enviar sugestões.
 ### Fluxo Principal:
 
 1. O cliente acessa a área de avaliação (máximo 3 cliques - RNF06).
-2. O cliente escolhe uma nota/avaliação.
-3. O cliente decide se deseja enviar de forma anônima ou identificada (RN08).
-4. O cliente escreve o comentário e confirma o envio.
+   
+3. O cliente escolhe uma nota/avaliação.
+   
+5. O cliente decide se deseja enviar de forma anônima ou identificada (RN08).
+   
+7. O cliente escreve o comentário e confirma o envio.
 
 ### RF Relacionados: 
 RF05
@@ -126,9 +133,12 @@ Registrar um problema técnico ou reclamação detalhada.
 ### Fluxo Principal:
 
 1. O cliente acessa a central de atendimento.
-2. O cliente preenche obrigatoriamente a "Descrição do ocorrido" (RN06).
-3. O sistema registra o chamado com data, hora e status inicial.
-4. O sistema gera um protocolo de confirmação.
+   
+3. O cliente preenche obrigatoriamente a "Descrição do ocorrido" (RN06).
+   
+5. O sistema registra o chamado com data, hora e status inicial.
+   
+7. O sistema gera um protocolo de confirmação.
 
 ### Fluxos Alternativos:
 
@@ -160,9 +170,12 @@ Visualizar detalhes dos produtos ou serviços oferecidos.
 ### Fluxo Principal:
 
 1. O usuário acessa o menu de Catálogo.
-2. O sistema lista os itens disponíveis.
-3. O usuário seleciona um item específico.
-4. O sistema carrega a ficha técnica detalhada em até 2 segundos (RNF01).
+   
+3. O sistema lista os itens disponíveis.
+   
+5. O usuário seleciona um item específico.
+   
+7. O sistema carrega a ficha técnica detalhada em até 2 segundos (RNF01).
 
 ### RF Relacionados: 
 RF07
@@ -188,9 +201,12 @@ Monitorar métricas, feedbacks e gerir as demandas dos clientes.
 ### Fluxo Principal:
 
 1. O gestor acessa a tela de Dashboard.
-2. O sistema exibe métricas de feedback e lista de chamados pendentes.
-3. O gestor visualiza os detalhes dos chamados e feedbacks (identificados ou anônimos).
-4. O gestor pode alterar o status de um chamado ou publicar avisos no Mural.
+   
+3. O sistema exibe métricas de feedback e lista de chamados pendentes.
+   
+5. O gestor visualiza os detalhes dos chamados e feedbacks (identificados ou anônimos).
+   
+7. O gestor pode alterar o status de um chamado ou publicar avisos no Mural.
 
 ### Fluxos Alternativos:
 
