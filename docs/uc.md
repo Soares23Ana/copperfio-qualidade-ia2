@@ -1,6 +1,6 @@
 ---
 
-$$ UC01 — Cadastrar Usuário
+## UC01 — Cadastrar Usuário
 ### Ator Principal: 
 Visitante
 
@@ -110,81 +110,94 @@ RN08
 ### Ator Principal: 
 Cliente
 
-Objetivo: Registrar um problema técnico ou reclamação detalhada.
+### Objetivo: 
+Registrar um problema técnico ou reclamação detalhada.
 
-Pré-condições: Cliente autenticado no aplicativo.
+### Pré-condições: 
+- Cliente autenticado no aplicativo.
 
-Pós-condições: Chamado registrado com status "Pendente" (RN07).
+### Pós-condições: 
+-Chamado registrado com status "Pendente" (RN07).
 
-Fluxo Principal:
+### Fluxo Principal:
 
-O cliente acessa a central de atendimento.
+1. O cliente acessa a central de atendimento.
+2. O cliente preenche obrigatoriamente a "Descrição do ocorrido" (RN06).
+3. O sistema registra o chamado com data, hora e status inicial.
+4. O sistema gera um protocolo de confirmação.
 
-O cliente preenche obrigatoriamente a "Descrição do ocorrido" (RN06).
+### Fluxos Alternativos:
 
-O sistema registra o chamado com data, hora e status inicial.
+-**A1 — Descrição vazia:**
+- O sistema impede o envio e alerta sobre a obrigatoriedade do campo (RN06).
 
-O sistema gera um protocolo de confirmação.
+### RF Relacionados: 
+RF06
 
-Fluxos Alternativos:
+### RNF Relacionados: 
+RNF06
 
-A1 — Descrição vazia: O sistema impede o envio e alerta sobre a obrigatoriedade do campo (RN06).
+### RN Relacionadas: 
+RN06, RN07
 
-RF Relacionados: RF06
-
-RNF Relacionados: RNF06
-
-RN Relacionadas: RN06, RN07
-
-UC05 — Consultar Catálogo e Fichas Técnicas
+---
+### UC05 — Consultar Catálogo e Fichas Técnicas
 Ator Principal: Usuário (Qualquer perfil)
 
-Objetivo: Visualizar detalhes dos produtos ou serviços oferecidos.
+### Objetivo: 
+Visualizar detalhes dos produtos ou serviços oferecidos.
 
-Pré-condições: Nenhuma (ou autenticado, dependendo da regra de negócio).
+### Pré-condições:
+- Nenhuma (ou autenticado, dependendo da regra de negócio).
 
-Pós-condições: Informações técnicas exibidas na tela.
+### Pós-condições: 
+- Informações técnicas exibidas na tela.
 
-Fluxo Principal:
+### Fluxo Principal:
 
-O usuário acessa o menu de Catálogo.
+1. O usuário acessa o menu de Catálogo.
+2. O sistema lista os itens disponíveis.
+3. O usuário seleciona um item específico.
+4. O sistema carrega a ficha técnica detalhada em até 2 segundos (RNF01).
 
-O sistema lista os itens disponíveis.
+### RF Relacionados: 
+RF07
 
-O usuário seleciona um item específico.
+### RNF Relacionados: 
+RNF01
 
-O sistema carrega a ficha técnica detalhada em até 2 segundos (RNF01).
+---
 
-RF Relacionados: RF07
+## UC06 — Gerenciar Dashboard e Chamados
+### Ator Principal: 
+Gestor / Administrador
 
-RNF Relacionados: RNF01
+### Objetivo: 
+Monitorar métricas, feedbacks e gerir as demandas dos clientes.
 
-3. Módulo do Gestor / Administrador
-UC06 — Gerenciar Dashboard e Chamados
-Ator Principal: Gestor / Administrador
+### Pré-condições: 
+- Usuário autenticado com perfil "Gestor" ou "Administrador" (RN05).
 
-Objetivo: Monitorar métricas, feedbacks e gerir as demandas dos clientes.
+### Pós-condições: 
+- Visualização atualizada das métricas e status dos chamados.
 
-Pré-condições: Usuário autenticado com perfil "Gestor" ou "Administrador" (RN05).
+### Fluxo Principal:
 
-Pós-condições: Visualização atualizada das métricas e status dos chamados.
+1. O gestor acessa a tela de Dashboard.
+2. O sistema exibe métricas de feedback e lista de chamados pendentes.
+3. O gestor visualiza os detalhes dos chamados e feedbacks (identificados ou anônimos).
+4. O gestor pode alterar o status de um chamado ou publicar avisos no Mural.
 
-Fluxo Principal:
+### Fluxos Alternativos:
 
-O gestor acessa a tela de Dashboard.
+-** A1 — Usuário comum tenta acessar:**
+- O sistema bloqueia o acesso e exibe erro de permissão (RN05).
 
-O sistema exibe métricas de feedback e lista de chamados pendentes.
+### RF Relacionados: 
+RF08, RF09, RF10
 
-O gestor visualiza os detalhes dos chamados e feedbacks (identificados ou anônimos).
+### RNF Relacionados: 
+RNF01
 
-O gestor pode alterar o status de um chamado ou publicar avisos no Mural.
-
-Fluxos Alternativos:
-
-A1 — Usuário comum tenta acessar: O sistema bloqueia o acesso e exibe erro de permissão (RN05).
-
-RF Relacionados: RF08, RF09, RF10
-
-RNF Relacionados: RNF01
-
-RN Relacionadas: RN05, RN07, RN08
+### RN Relacionadas: 
+RN05, RN07, RN08
