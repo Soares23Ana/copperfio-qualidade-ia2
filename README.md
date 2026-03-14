@@ -29,3 +29,14 @@ Desenvolver um aplicativo Android corporativo que permita:
 
 ---
 
+##  Documentação do Projeto
+
+Para facilitar a navegação, acesse os documentos detalhados abaixo:
+
+| Documento | Descrição | Link |
+| :--- | :--- | :--- |
+| **Requisitos Funcionais** | Funcionalidades que o sistema deve ter. | [Acessar RF](./docs/rf.md) |
+| **Requisitos Não Funcionais** | Critérios de performance, segurança e usabilidade. | [Acessar RNF](./docs/rnf.md) |
+| **Backlog e User Stories** | Lista de tarefas, épicos e histórias de usuário. | [Acessar Backlog](./docs/backlog.md) |
+| **Arquitetura** | Estrutura técnica e visão do sistema. | [Acessar Arquitetura](./docs/architecture2.md) |
+
