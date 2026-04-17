@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:provider/provider.dart';
-import 'package:projeto_integrado/views/home/splash_intro_page.dart';
-import 'package:projeto_integrado/viewmodels/dashboard_viewmodel.dart';
-import 'package:projeto_integrado/viewmodels/feedbacks_viewmodel.dart';
-import 'package:projeto_integrado/viewmodels/alertas_viewmodel.dart';
-import 'package:projeto_integrado/viewmodels/chamados_viewmodel.dart';
-import 'package:projeto_integrado/viewmodels/chat_viewmodel.dart';
+import 'package:projeto_integrado/features/splash/view/splash_intro_page.dart';
+import 'package:projeto_integrado/features/dashboard/viewmodel/dashboard_viewmodel.dart';
+import 'package:projeto_integrado/features/dashboard/viewmodel/feedbacks_viewmodel.dart';
+import 'package:projeto_integrado/features/dashboard/viewmodel/alertas_viewmodel.dart';
+import 'package:projeto_integrado/features/chamados/viewmodel/chamados_viewmodel.dart';
+import 'package:projeto_integrado/features/chat/viewmodel/chat_viewmodel.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     MultiProvider(
       providers: [

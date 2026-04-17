@@ -1,4 +1,4 @@
-package com.example.projeto_integrado
+package br.com.copperfio
 
 import io.flutter.embedding.android.FlutterActivity
 

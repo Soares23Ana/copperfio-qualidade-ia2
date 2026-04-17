@@ -5,6 +5,7 @@ class UsuarioModel {
   final String? endereco;
   final String? dataNascimento;
   final String? genero;
+  final String? empresa;
   final String role;
 
   UsuarioModel({
@@ -14,6 +15,7 @@ class UsuarioModel {
     this.endereco,
     this.dataNascimento,
     this.genero,
+    this.empresa,
     required this.role,
   });
 }

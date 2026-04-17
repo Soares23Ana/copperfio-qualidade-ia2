@@ -37,6 +37,7 @@ class UsuarioMockStore {
           endereco: usuarios[i].endereco,
           dataNascimento: usuarios[i].dataNascimento,
           genero: usuarios[i].genero,
+          empresa: usuarios[i].empresa,
           role: usuarios[i].role,
         );
         break;
