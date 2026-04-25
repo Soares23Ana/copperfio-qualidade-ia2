@@ -8,15 +8,15 @@ import 'package:projeto_integrado/features/dashboard/viewmodel/feedbacks_viewmod
 import 'package:projeto_integrado/features/dashboard/viewmodel/alertas_viewmodel.dart';
 import 'package:projeto_integrado/features/chamados/viewmodel/chamados_viewmodel.dart';
 import 'package:projeto_integrado/features/chat/viewmodel/chat_viewmodel.dart';
+import 'package:projeto_integrado/core/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => DashboardViewModel()),
         ChangeNotifierProvider(create: (_) => FeedbacksViewModel()),
         ChangeNotifierProvider(create: (_) => AlertasViewModel()),
@@ -33,11 +33,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'P1 - Desenvolvimento Mobile',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const SplashIntroPage(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'P1 - Desenvolvimento Mobile',
+          debugShowCheckedModeBanner: false,
+          theme: themeProvider.currentTheme,
+          home: const SplashIntroPage(),
+        );
+      },
     );
   }
 }

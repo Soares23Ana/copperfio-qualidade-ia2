@@ -94,8 +94,6 @@ class ForgotPasswordPage extends StatelessWidget {
                                   controller: _emailController,
                                   decoration: InputDecoration(
                                     hintText: 'Digite o seu email',
-                                    filled: true,
-                                    fillColor: Colors.grey.shade100,
                                     prefixIcon: const Icon(
                                       Icons.email,
                                       color: Color(0xFF9C1818),

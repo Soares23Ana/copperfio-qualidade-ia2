@@ -1,139 +1,248 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodel/alertas_viewmodel.dart';
+import '../../../core/theme_provider.dart';
 import 'dashboard_page.dart';
-import 'feedbacks_page.dart';
+import 'feedbacks_page.dart' as feedbacks;
 import '../../chamados/view/chamados_page.dart';
 
-class AlertasPage extends StatelessWidget {
+class AlertasPage extends StatefulWidget {
   const AlertasPage({super.key});
+
+  @override
+  State<AlertasPage> createState() => _AlertasPageState();
+}
+
+class _AlertasPageState extends State<AlertasPage> {
+  int _currentIndex = 2; // Alertas is index 2
 
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<AlertasViewModel>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
+    final primaryColor = const Color(0xFF8C1D18);
+    final bgColor = isDark ? const Color(0xFF121212) : const Color(0xFFFAFAFA);
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F1F6),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _PageHeader(
-              title: 'Dashboard do Gestor',
-              subtitle: 'Copperfio - Análise do Feedback',
-              pageTitle: 'Alertas',
+      backgroundColor: bgColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'COPPERFIO',
+          style: TextStyle(
+            color: primaryColor,
+            fontWeight: FontWeight.w900,
+            fontSize: 18,
+            letterSpacing: 0.5,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isDark ? Icons.light_mode : Icons.dark_mode,
+              color: isDark ? Colors.white70 : Colors.black54,
             ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Buscar alertas...',
-                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
+            onPressed: themeProvider.toggleTheme,
+          ),
+          IconButton(
+            icon: Icon(Icons.search, color: isDark ? Colors.white70 : Colors.black54),
+            onPressed: () {},
+          ),
+          CircleAvatar(
+            radius: 14,
+            backgroundColor: primaryColor.withOpacity(0.2),
+            child: Icon(Icons.person, color: primaryColor, size: 18),
+          ),
+          const SizedBox(width: 16),
+        ],
+      ),
+      drawer: const Drawer(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Alertas',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: textColor,
               ),
             ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '${vm.alertas.length} alertas requerem atenção imediata',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              '${vm.alertas.length} ALERTAS REQUEREM ATENÇÃO IMEDIATA',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+                letterSpacing: 1.0,
               ),
             ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: vm.alertas.length,
-                itemBuilder: (context, index) {
-                  final alerta = vm.alertas[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
+          ),
+          const SizedBox(height: 24),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: vm.alertas.length,
+              itemBuilder: (context, index) {
+                final alerta = vm.alertas[index];
+                
+                final timeText = index == 0 ? 'HÁ 5 MINUTOS' : (index == 1 ? 'HÁ 12 MINUTOS' : 'HÁ POUCO TEMPO');
+                
+                IconData iconData = Icons.warning;
+                if (alerta.titulo.toLowerCase().contains('conexão') || alerta.titulo.toLowerCase().contains('rede')) {
+                  iconData = Icons.wifi_off;
+                } else if (alerta.titulo.toLowerCase().contains('temperatura')) {
+                  iconData = Icons.thermostat;
+                } else if (alerta.titulo.toLowerCase().contains('energia') || alerta.titulo.toLowerCase().contains('tensão')) {
+                  iconData = Icons.electrical_services;
+                }
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(4),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          width: 4,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              bottomLeft: Radius.circular(4),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: isDark ? primaryColor.withOpacity(0.2) : const Color(0xFFF2D7D5),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(iconData, color: primaryColor, size: 20),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            alerta.titulo,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                              color: textColor,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            alerta.descricao,
+                                            style: TextStyle(
+                                              color: isDark ? Colors.grey[400] : Colors.grey[700],
+                                              fontSize: 13,
+                                              height: 1.3,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Divider(color: isDark ? Colors.grey[800] : Colors.grey[200], height: 1),
+                                const SizedBox(height: 12),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    timeText,
+                                    style: TextStyle(
+                                      color: isDark ? Colors.grey[500] : Colors.grey[500],
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      leading: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(Icons.warning, color: Colors.red),
-                      ),
-                      title: Text(
-                        alerta.titulo,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(alerta.descricao),
-                    ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            const SizedBox(height: 16),
+          ),
+          if (vm.contatosImediatos.isNotEmpty) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Contato imediato:',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+              child: Text(
+                'Contato imediato:',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
             ),
             const SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: vm.contatosImediatos.map((contato) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text(
-                      '• Entre em contato com $contato',
-                      style: TextStyle(color: Colors.grey.shade700),
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Row(
+                      children: [
+                        Icon(Icons.phone, size: 14, color: primaryColor),
+                        const SizedBox(width: 8),
+                        Text(
+                          contato,
+                          style: TextStyle(
+                            color: isDark ? Colors.grey[400] : Colors.grey[700],
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }).toList(),
@@ -141,197 +250,67 @@ class AlertasPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
           ],
-        ),
+        ],
       ),
-    );
-  }
-}
-
-class _PageHeader extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String pageTitle;
-
-  const _PageHeader({
-    required this.title,
-    required this.subtitle,
-    required this.pageTitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      'assets/images/copperfio_logo.png',
-                      width: 72,
-                      height: 72,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.apartment,
-                        size: 56,
-                        color: Color(0xFF9C1818),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF3C1F1F),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            subtitle,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF9C1818),
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(32),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                          ),
-                          onPressed: () => Navigator.maybePop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            pageTitle,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _TabButton(
-                            label: 'Dashboard',
-                            selected: false,
-                            onTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const DashboardPage(),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 10),
-                          _TabButton(
-                            label: 'Feedbacks',
-                            selected: false,
-                            onTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const FeedbacksPage(),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 10),
-                          const _TabButton(label: 'Alertas', selected: true),
-                          const SizedBox(width: 10),
-                          _TabButton(
-                            label: 'Chamados',
-                            selected: false,
-                            onTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const ChamadosPage(),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TabButton extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  const _TabButton({required this.label, required this.selected, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(24),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: selected ? Colors.white : Colors.white24,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withOpacity(0.35)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected ? const Color(0xFF9C1818) : Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentIndex,
+          selectedItemColor: primaryColor,
+          unselectedItemColor: isDark ? Colors.grey[600] : Colors.grey[400],
+          backgroundColor: cardColor,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 9, letterSpacing: 0.5),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 9, letterSpacing: 0.5),
+          elevation: 0,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            if (index == 0) {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DashboardPage()));
+            } else if (index == 1) {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const feedbacks.FeedbacksPage()));
+            } else if (index == 3) {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChamadosPage()));
+            }
+          },
+          items: [
+            const BottomNavigationBarItem(
+              icon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.dashboard)),
+              label: 'Dashboard',
+            ),
+            const BottomNavigationBarItem(
+              icon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.chat_bubble_outline)),
+              label: 'Feedbacks',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.notifications, color: Colors.white, size: 20),
+                ),
+              ),
+              label: 'Alertas',
+            ),
+            const BottomNavigationBarItem(
+              icon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.support_agent)),
+              label: 'Chamados',
+            ),
+          ],
         ),
       ),
     );

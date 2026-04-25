@@ -121,8 +121,6 @@ class _SignupPageState extends State<SignupPage> {
                                   decoration: InputDecoration(
                                     hintText: 'Nome completo',
                                     hintStyle: TextStyle(color: Colors.grey),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -142,8 +140,6 @@ class _SignupPageState extends State<SignupPage> {
                                   decoration: InputDecoration(
                                     hintText: 'Digite seu e-mail',
                                     hintStyle: TextStyle(color: Colors.grey),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -171,8 +167,6 @@ class _SignupPageState extends State<SignupPage> {
                                   decoration: InputDecoration(
                                     hintText: 'Senha',
                                     hintStyle: TextStyle(color: Colors.grey),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -214,8 +208,6 @@ class _SignupPageState extends State<SignupPage> {
                                   decoration: InputDecoration(
                                     hintText: 'Confirme a senha',
                                     hintStyle: TextStyle(color: Colors.grey),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -256,8 +248,6 @@ class _SignupPageState extends State<SignupPage> {
                                   decoration: InputDecoration(
                                     hintText: 'Nome da empresa',
                                     hintStyle: TextStyle(color: Colors.grey),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,

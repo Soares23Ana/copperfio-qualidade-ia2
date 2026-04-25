@@ -19,7 +19,7 @@ class AddUserViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final uid = await _authService.promoteUserToGestor(email);
+      await _authService.promoteUserToGestor(email);
       _successMessage = 'Usuário promovido a gestor com sucesso!';
       notifyListeners();
       return true;

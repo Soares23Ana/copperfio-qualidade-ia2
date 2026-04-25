@@ -36,4 +36,16 @@ class FirestoreService {
         .where('empresaId', isEqualTo: empresaId)
         .snapshots();
   }
+
+  // 🔹 Deletar feedback
+  Future<void> deletarFeedback(String feedbackId) async {
+    await _db.collection('feedbacks').doc(feedbackId).delete();
+  }
+
+  // 🔹 Marcar feedback como lido
+  Future<void> marcarFeedbackComoLido(String feedbackId) async {
+    await _db.collection('feedbacks').doc(feedbackId).update({
+      'isRead': true,
+    });
+  }
 }

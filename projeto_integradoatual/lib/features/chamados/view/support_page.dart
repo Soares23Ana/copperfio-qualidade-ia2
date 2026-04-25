@@ -97,8 +97,6 @@ class _SupportPageState extends State<SupportPage> {
                       TextFormField(
                         controller: _loteController,
                         decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey.shade100,
                           hintText: 'Selecione ou digite o lote',
                           suffixIcon: const Icon(
                             Icons.qr_code,
@@ -125,8 +123,6 @@ class _SupportPageState extends State<SupportPage> {
                       DropdownButtonFormField<String>(
                         value: _selectedCategory,
                         decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey.shade100,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,
@@ -156,8 +152,6 @@ class _SupportPageState extends State<SupportPage> {
                         minLines: 5,
                         maxLines: 8,
                         decoration: InputDecoration(
-                          fillColor: Colors.grey.shade100,
-                          filled: true,
                           hintText: 'Descreva em detalhes o ocorrido',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),

@@ -82,8 +82,6 @@ class CatalogPage extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Buscar por lote ou cliente...',
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
                   contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),

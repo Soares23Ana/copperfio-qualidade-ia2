@@ -1,5 +1,8 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../auth/view/login_page.dart';
+import '../../chamados/view/user_chamados_page.dart';
+import '../../../core/theme_provider.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -7,20 +10,35 @@ class PerfilPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF9C1818),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Perfil', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                icon: Icon(
+                  themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  themeProvider.toggleTheme();
+                },
+                tooltip: themeProvider.isDarkMode ? 'Modo Claro' : 'Modo Noturno',
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             // Header com avatar
             Container(
-              color: const Color(0xFFB02820),
+              color: Theme.of(context).colorScheme.primary,
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +53,7 @@ class PerfilPage extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: Colors.black.withValues(alpha: 0.2),
                               blurRadius: 6,
                             ),
                           ],
@@ -135,8 +153,8 @@ class PerfilPage extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFFB02820),
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            foregroundColor: Theme.of(context).colorScheme.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -192,11 +210,11 @@ class PerfilPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Theme.of(context).shadowColor.withValues(alpha: 0.08),
                           blurRadius: 4,
                         ),
                       ],
@@ -214,6 +232,19 @@ class PerfilPage extends StatelessWidget {
                         ),
                         _buildMenuDivider(),
                         _buildMenuItem('Endereço', Icons.location_on, () {}),
+                        _buildMenuDivider(),
+                        _buildMenuItem(
+                          'Meus Chamados',
+                          Icons.list_alt,
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const UserChamadosPage(),
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -257,7 +288,7 @@ class PerfilPage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(

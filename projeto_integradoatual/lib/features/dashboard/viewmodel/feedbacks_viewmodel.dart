@@ -42,4 +42,24 @@ class FeedbacksViewModel extends ChangeNotifier {
       empresaId: userEmpresaId,
     );
   }
+
+  // Deletar feedback
+  Future<void> deletarFeedback(String feedbackId) async {
+    try {
+      await _service.deletarFeedback(feedbackId);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Erro ao deletar feedback: $e');
+    }
+  }
+
+  // Marcar feedback como lido
+  Future<void> marcarComoLido(String feedbackId) async {
+    try {
+      await _service.marcarFeedbackComoLido(feedbackId);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Erro ao marcar como lido: $e');
+    }
+  }
 }

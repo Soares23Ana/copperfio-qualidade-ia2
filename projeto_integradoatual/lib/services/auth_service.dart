@@ -15,14 +15,18 @@ class AuthService {
     );
   }
 
+  String _normalizeEmail(String email) => email.trim().toLowerCase();
+
   Future<UserCredential> register({
     required String email,
     required String password,
     required String nome,
     required String empresa,
   }) async {
+    final normalizedEmail = _normalizeEmail(email);
+
     final userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email.trim(),
+      email: normalizedEmail,
       password: password.trim(),
     );
 
@@ -31,7 +35,8 @@ class AuthService {
 
     if (userId != null) {
       await _db.collection('users').doc(userId).set({
-        'email': email.trim(),
+        'email': normalizedEmail,
+        'email_lower': normalizedEmail,
         'nome': nome.trim(),
         'empresa': empresa.trim(),
         'tipo': tipo,
@@ -44,7 +49,7 @@ class AuthService {
   }
 
   Future<void> resetPassword(String email) async {
-    await _auth.sendPasswordResetEmail(email: email.trim());
+    await _auth.sendPasswordResetEmail(email: _normalizeEmail(email));
   }
 
   String? get currentUserId => _auth.currentUser?.uid;
@@ -69,54 +74,158 @@ class AuthService {
   }
 
   Future<bool> existsUserByEmail(String email) async {
-    final querySnapshot = await _db
-        .collection('users')
-        .where('email', isEqualTo: email.trim())
-        .limit(1)
-        .get();
-    return querySnapshot.docs.isNotEmpty;
+    try {
+      final trimmedEmail = email.trim();
+      final normalizedEmail = _normalizeEmail(email);
+
+      try {
+        final lowercaseEmailSnapshot = await _db
+            .collection('users')
+            .where('email_lower', isEqualTo: normalizedEmail)
+            .limit(1)
+            .get();
+        if (lowercaseEmailSnapshot.docs.isNotEmpty) {
+          return true;
+        }
+      } catch (e) {
+        print('Erro ao buscar email_lower: $e');
+      }
+
+      try {
+        final exactEmailSnapshot = await _db
+            .collection('users')
+            .where('email', isEqualTo: trimmedEmail)
+            .limit(1)
+            .get();
+        if (exactEmailSnapshot.docs.isNotEmpty) {
+          return true;
+        }
+      } catch (e) {
+        print('Erro ao buscar email exato: $e');
+      }
+
+      try {
+        final allUsersSnapshot = await _db.collection('users').get();
+        for (var doc in allUsersSnapshot.docs) {
+          final userEmail = doc.data()['email']?.toString() ?? '';
+          if (userEmail.toLowerCase() == normalizedEmail) {
+            return true;
+          }
+        }
+      } catch (e) {
+        print('Erro ao buscar todos os usuários: $e');
+      }
+
+      return false;
+    } catch (e) {
+      print('Erro geral em existsUserByEmail: $e');
+      return false;
+    }
   }
 
   Future<String?> promoteUserToGestor(String email) async {
     final email_ = email.trim().toLowerCase();
     
-    final querySnapshot = await _db
-        .collection('users')
-        .where('email', isEqualTo: email_)
-        .limit(1)
-        .get();
+    try {
+      var querySnapshot = await _db
+          .collection('users')
+          .where('email', isEqualTo: email_)
+          .limit(1)
+          .get();
+      
+      if (querySnapshot.docs.isEmpty) {
+        querySnapshot = await _db
+            .collection('users')
+            .where('email_lower', isEqualTo: email_)
+            .limit(1)
+            .get();
+      }
+
+      if (querySnapshot.docs.isEmpty) {
+        final allUsersSnapshot = await _db.collection('users').get();
+        for (var doc in allUsersSnapshot.docs) {
+          final userEmail = doc.data()['email']?.toString() ?? '';
+          if (userEmail.toLowerCase() == email_) {
+            querySnapshot = await _db.collection('users').where('email', isEqualTo: userEmail).limit(1).get();
+            break;
+          }
+        }
+      }
     
-    if (querySnapshot.docs.isEmpty) {
-      throw Exception('Usuário com este email não encontrado.');
+      if (querySnapshot.docs.isEmpty) {
+        throw Exception('Usuário com este email não encontrado.');
+      }
+      
+      final userDoc = querySnapshot.docs.first;
+      final uid = userDoc.id;
+      final currentTipo = userDoc.data()['tipo'] as String?;
+      
+      if (currentTipo == 'empresa') {
+        throw Exception('Este usuário já é gestor.');
+      }
+      
+      await _db.collection('users').doc(uid).update({
+        'tipo': 'empresa',
+        'promotedAt': FieldValue.serverTimestamp(),
+      });
+      
+      return uid;
+    } catch (e) {
+      throw Exception('Erro ao promover usuário: ${e.toString()}');
     }
-    
-    final userDoc = querySnapshot.docs.first;
-    final uid = userDoc.id;
-    final currentTipo = userDoc.data()['tipo'] as String?;
-    
-    if (currentTipo == 'empresa') {
-      throw Exception('Este usuário já é gestor.');
-    }
-    
-    await _db.collection('users').doc(uid).update({
-      'tipo': 'empresa',
-      'promotedAt': FieldValue.serverTimestamp(),
-    });
-    
-    return uid;
   }
 
   Future<Map<String, dynamic>?> getUserByEmail(String email) async {
+    try {
+      final normalizedEmail = _normalizeEmail(email);
+      
+      var querySnapshot = await _db
+          .collection('users')
+          .where('email', isEqualTo: normalizedEmail)
+          .limit(1)
+          .get();
+      
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first.data();
+      }
+
+      querySnapshot = await _db
+          .collection('users')
+          .where('email_lower', isEqualTo: normalizedEmail)
+          .limit(1)
+          .get();
+      
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first.data();
+      }
+
+      final allUsersSnapshot = await _db.collection('users').get();
+      for (var doc in allUsersSnapshot.docs) {
+        final userEmail = doc.data()['email']?.toString() ?? '';
+        if (userEmail.toLowerCase() == normalizedEmail) {
+          return doc.data();
+        }
+      }
+
+      return null;
+    } catch (e) {
+      print('Erro ao buscar usuário por email: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getFirstEmpresaUser() async {
     final querySnapshot = await _db
         .collection('users')
-        .where('email', isEqualTo: email.trim().toLowerCase())
+        .where('tipo', isEqualTo: 'empresa')
         .limit(1)
         .get();
-    
+
     if (querySnapshot.docs.isEmpty) {
       return null;
     }
-    
-    return querySnapshot.docs.first.data();
+
+    final doc = querySnapshot.docs.first;
+    return {...doc.data(), 'id': doc.id};
   }
 }

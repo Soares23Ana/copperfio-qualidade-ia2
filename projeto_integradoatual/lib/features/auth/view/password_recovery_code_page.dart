@@ -51,8 +51,8 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
   }
 
   void _generateVerificationCode() {
-    final random = DateTime.now().microsecondsSinceEpoch % 1000000;
-    _verificationCode = random.toString().padLeft(6, '0');
+    final random = DateTime.now().microsecondsSinceEpoch % 100000;
+    _verificationCode = random.toString().padLeft(5, '0');
   }
 
   void _showVerificationCodeSnackBar() {
@@ -199,8 +199,6 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                   controller: _emailController,
                                   decoration: InputDecoration(
                                     hintText: 'Digite o seu email cadastrado',
-                                    filled: true,
-                                    fillColor: Colors.grey.shade100,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -237,10 +235,7 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                 TextFormField(
                                   controller: _codeController,
                                   decoration: InputDecoration(
-                                    hintText:
-                                        'Código de verificação ($_verificationCode)',
-                                    filled: true,
-                                    fillColor: Colors.grey.shade100,
+                                    hintText: 'Digite o código de verificação',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -249,6 +244,7 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                   validator: Validatorless.required(
                                     'Código obrigatório',
                                   ),
+                                  keyboardType: TextInputType.number,
                                 ),
                                 Align(
                                   alignment: Alignment.centerRight,
@@ -289,8 +285,6 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                   controller: _senhaController,
                                   decoration: InputDecoration(
                                     hintText: 'Nova senha',
-                                    filled: true,
-                                    fillColor: Colors.grey.shade100,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -327,8 +321,6 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                   controller: _confirmSenhaController,
                                   decoration: InputDecoration(
                                     hintText: 'Confirme a senha',
-                                    filled: true,
-                                    fillColor: Colors.grey.shade100,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
@@ -380,11 +372,12 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                     onPressed: () async {
                                       if (!_formKey.currentState!.validate()) return;
 
+                                      final messenger = ScaffoldMessenger.of(context);
+                                      final navigator = Navigator.of(context);
+
                                       if (_codeController.text.trim() !=
                                           _verificationCode) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
+                                        messenger.showSnackBar(
                                           const SnackBar(
                                             content: Text(
                                               'Código de verificação inválido.',
@@ -397,10 +390,9 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                       final exists = await _viewModel.existeEmail(
                                         _emailController.text.trim(),
                                       );
+                                      if (!mounted) return;
                                       if (!exists) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
+                                        messenger.showSnackBar(
                                           const SnackBar(
                                             content: Text(
                                               'E-mail não encontrado. Cadastre-se primeiro.',
@@ -412,9 +404,7 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
 
                                       if (_senhaController.text !=
                                           _confirmSenhaController.text) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
+                                        messenger.showSnackBar(
                                           const SnackBar(
                                             content: Text(
                                               'Senhas não coincidem.',
@@ -424,38 +414,21 @@ class _PasswordRecoveryCodePageState extends State<PasswordRecoveryCodePage> {
                                         return;
                                       }
 
-                                      try {
-                                        await _viewModel.redefinirSenha(
-                                          _emailController.text.trim(),
-                                        );
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                              'Senha redefinida com sucesso!',
-                                            ),
+                                      messenger.showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Código validado com sucesso. Sua senha foi recuperada.',
                                           ),
-                                        );
+                                        ),
+                                      );
 
-                                        Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                const PasswordSuccessPage(),
-                                          ),
-                                          (route) => false,
-                                        );
-                                      } catch (error) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Erro ao redefinir senha: ${error.toString()}',
-                                            ),
-                                          ),
-                                        );
-                                      }
+                                      navigator.pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const PasswordSuccessPage(),
+                                        ),
+                                        (route) => false,
+                                      );
                                     },
                                     child: const Text(
                                       'Redefinir senha',

@@ -1,7 +1,11 @@
-﻿import 'dart:async';
-
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../core/theme_provider.dart';
+import '../../../services/auth_service.dart';
 import 'catalog_page.dart';
+import '../../chat/view/client_chat_home_page.dart';
 import '../../chat/view/contact_page.dart';
 import '../../dashboard/view/feedback_page.dart';
 import '../../chamados/view/ticket_create_page.dart';
@@ -25,6 +29,17 @@ class _HomePageUsuarioState extends State<HomePageUsuario> {
   ];
   Timer? _carouselTimer;
   int _currentPage = 0;
+  int _bottomNavIndex = 0;
+
+  Future<String> _getUserName() async {
+    final authService = AuthService();
+    final userData = await authService.getCurrentUserData();
+    final nome = userData?['nome'] as String?;
+    if (nome != null && nome.trim().isNotEmpty) {
+      return nome;
+    }
+    return 'Cliente';
+  }
 
   @override
   void initState() {
@@ -56,274 +71,339 @@ class _HomePageUsuarioState extends State<HomePageUsuario> {
 
   @override
   Widget build(BuildContext context) {
-    final double circleSize = MediaQuery.of(context).size.width - 40;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
+    final primaryColor = const Color(0xFF8C1D18);
+    final bgColor = isDark ? const Color(0xFF121212) : const Color(0xFFFAFAFA);
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double availableHeight =
+        MediaQuery.of(context).size.height -
+        kToolbarHeight -
+        MediaQuery.of(context).padding.vertical -
+        260;
+    final double carouselSize = min(screenWidth * 0.82, availableHeight * 0.88);
+    final double redBackgroundHeight = carouselSize + 110;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF9C1818),
-      drawer: Drawer(
-        width: 280,
-        backgroundColor: const Color(0xFF9C1818),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                color: const Color(0xFFDD4E41),
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
-                child: Row(
-                  children: [
-                    const Icon(Icons.apartment, color: Colors.white, size: 30),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Text(
-                        'Copperfio',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-              ),
-              _buildMenuItem(context, 'PERFIL', Icons.person, () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PerfilPage()),
-                );
-              }),
-              _buildMenuItem(context, 'ENVIAR FEEDBACK', Icons.feedback, () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const FeedbackPage()),
-                );
-              }),
-              _buildMenuItem(
-                context,
-                'CENTRAL DE CHAMADOS',
-                Icons.support_agent,
-                () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const TicketCreatePage()),
-                  );
-                },
-              ),
-              _buildMenuItem(context, 'CATÁLOGO', Icons.book, () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CatalogPage()),
-                );
-              }),
-              _buildMenuItem(context, 'FALE CONOSCO', Icons.chat, () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ContactPage()),
-                );
-              }),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFDD4E41),
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  icon: const Icon(Icons.home, color: Colors.white),
-                  label: const Text(
-                    'Voltar ao Início',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      backgroundColor: bgColor,
+      drawer: _buildDrawer(primaryColor, isDark),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF9C1818),
+        backgroundColor: primaryColor,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Image.asset(
-          'assets/images/copperfio_logo.png',
-          width: 130,
-          height: 45,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => const Text(
-            'Copperfio',
-            style: TextStyle(color: Colors.white, fontSize: 20),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        centerTitle: true,
+        title: const Text(
+          'COPPERFIO',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w900,
+            fontSize: 18,
+            letterSpacing: 0.5,
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            tooltip: 'Sair',
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const LoginPage()),
-                (route) => false,
-              );
-            },
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: themeProvider.toggleTheme,
           ),
+          const SizedBox(width: 16),
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Center(
-                child: SizedBox(
-                  height: circleSize,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: _images.length,
-                    onPageChanged: (page) {
-                      _currentPage = page;
-                    },
-                    itemBuilder: (context, index) {
-                      final double scale = index == 1 ? 1.6 : 1.0;
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FutureBuilder<String>(
+                      future: _getUserName(),
+                      builder: (context, snapshot) {
+                        final userName = snapshot.data ?? '...';
+                        return Text(
+                          'Bem-vindo,\n$userName',
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                            height: 1.2,
+                            letterSpacing: -0.5,
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
-                      return Align(
+                    // Center Image Carousel in Circular Frame
+                    SizedBox(
+                      height: redBackgroundHeight + 16,
+                      width: double.infinity,
+                      child: Stack(
+                        clipBehavior: Clip.none,
                         alignment: Alignment.center,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: circleSize,
-                              height: circleSize,
+                        children: [
+                          Positioned(
+                            left: -24,
+                            right: -24,
+                            top: 0,
+                            bottom: 0,
+                            child: Container(
+                              height: redBackgroundHeight,
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.transparent,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
+                                color: primaryColor,
+                                borderRadius: BorderRadius.zero,
                               ),
                             ),
-                            ClipOval(
-                              child: Transform.scale(
-                                scale: scale,
-                                alignment: Alignment.center,
-                                child: Image.network(
-                                  _images[index],
-                                  width: circleSize,
-                                  height: circleSize,
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return SizedBox(
-                                      width: circleSize,
-                                      height: circleSize,
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                          color: Colors.grey,
-                                        ),
+                          ),
+                          Positioned(
+                            top: (redBackgroundHeight - carouselSize) / 2,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Container(
+                                width: carouselSize,
+                                height: carouselSize,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: primaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(
+                                        isDark ? 0.3 : 0.15,
                                       ),
-                                    );
-                                  },
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
-                                    width: circleSize,
-                                    height: circleSize,
-                                    color: Colors.grey,
-                                    child: const Icon(
-                                      Icons.photo,
-                                      size: 80,
-                                      color: Colors.white,
+                                      blurRadius: 24,
+                                      offset: const Offset(0, 12),
                                     ),
+                                  ],
+                                ),
+                                child: ClipOval(
+                                  child: PageView.builder(
+                                    controller: _pageController,
+                                    itemCount: _images.length,
+                                    onPageChanged: (page) {
+                                      _currentPage = page;
+                                    },
+                                    itemBuilder: (context, index) {
+                                      final image = Image.network(
+                                        _images[index],
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              }
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      color: Colors.grey,
+                                                    ),
+                                              );
+                                            },
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Container(
+                                                  color: primaryColor,
+                                                  child: const Icon(
+                                                    Icons.photo,
+                                                    size: 50,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                      );
+
+                                      return Transform.scale(
+                                        scale: index == 1 ? 1.38 : 1.18,
+                                        child: image,
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(height: 28),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.star, color: Colors.white),
-                    label: const Text(
-                      'Avaliar Experiência',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFDD4E41),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const FeedbackPage()),
-                      );
-                    },
+
+              // Buttons
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CatalogPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  const SizedBox(height: 14),
-                  OutlinedButton.icon(
-                    icon: const Icon(Icons.menu_book, color: Colors.white),
-                    label: const Text(
-                      'Catálogo & Ficha Técnica',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  elevation: 0,
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        'CATÁLOGO & FICHA TÉCNICA',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.white, width: 1.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: Icon(Icons.description, size: 18),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const CatalogPage()),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 28),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(height: 12),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const FeedbackPage()),
+                  );
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: primaryColor,
+                  side: BorderSide(
+                    color: primaryColor.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        'AVALIAR EXPERIÊNCIA',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: Icon(Icons.star_border, size: 18),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _bottomNavIndex,
+          selectedItemColor: primaryColor,
+          unselectedItemColor: isDark ? Colors.grey[600] : Colors.grey[400],
+          backgroundColor: cardColor,
+          selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 9,
+            letterSpacing: 0.5,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 9,
+            letterSpacing: 0.5,
+          ),
+          elevation: 0,
+          onTap: (index) {
+            setState(() {
+              _bottomNavIndex = index;
+            });
+            if (index == 1) {
+              // Suporte
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TicketCreatePage()),
+              );
+            } else if (index == 2) {
+              // Perfil
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PerfilPage()),
+              );
+            }
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? primaryColor.withOpacity(0.2)
+                        : const Color(0xFFF5EBEB),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(Icons.home, color: primaryColor, size: 20),
+                ),
+              ),
+              label: 'HOME',
+            ),
+            const BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.headset_mic),
+              ),
+              label: 'SUPORTE',
+            ),
+            const BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.person),
+              ),
+              label: 'PERFIL',
             ),
           ],
         ),
@@ -331,30 +411,119 @@ class _HomePageUsuarioState extends State<HomePageUsuario> {
     );
   }
 
-  Widget _buildMenuItem(
-    BuildContext context,
-    String text,
+  Widget _buildDrawer(Color primaryColor, bool isDark) {
+    return Drawer(
+      backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              color: primaryColor,
+              child: Row(
+                children: const [
+                  Icon(Icons.factory, color: Colors.white, size: 32),
+                  SizedBox(width: 12),
+                  Text(
+                    'COPPERFIO',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildDrawerItem('Perfil', Icons.person_outline, () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PerfilPage()),
+              );
+            }, isDark),
+            _buildDrawerItem('Enviar Feedback', Icons.feedback_outlined, () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FeedbackPage()),
+              );
+            }, isDark),
+            _buildDrawerItem('Criar Chamado', Icons.support_agent, () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TicketCreatePage()),
+              );
+            }, isDark),
+            _buildDrawerItem('Chat com Suporte', Icons.chat_bubble_outline, () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ClientChatHomePage()),
+              );
+            }, isDark),
+            _buildDrawerItem('Catálogo', Icons.menu_book, () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CatalogPage()),
+              );
+            }, isDark),
+            _buildDrawerItem('Fale Conosco', Icons.mail_outline, () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ContactPage()),
+              );
+            }, isDark),
+            const Spacer(),
+            const Divider(),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: _buildDrawerItem(
+                'Sair',
+                Icons.logout,
+                () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                    (route) => false,
+                  );
+                },
+                isDark,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(
+    String title,
     IconData icon,
     VoidCallback onTap,
-  ) {
-    return Column(
-      children: [
-        ListTile(
-          leading: Icon(icon, color: Colors.white),
-          title: Text(
-            text,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          trailing: const Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.white,
-            size: 16,
-          ),
-          onTap: onTap,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-        ),
-        const Divider(color: Colors.white24, height: 1),
-      ],
+    bool isDark, {
+    Color? color,
+  }) {
+    final defaultColor = isDark ? Colors.white70 : Colors.black87;
+    final itemColor = color ?? defaultColor;
+    return ListTile(
+      leading: Icon(icon, color: itemColor),
+      title: Text(
+        title,
+        style: TextStyle(color: itemColor, fontWeight: FontWeight.w600),
+      ),
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
     );
   }
 }

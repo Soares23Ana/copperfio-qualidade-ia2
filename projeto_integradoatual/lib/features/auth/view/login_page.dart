@@ -98,10 +98,9 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(height: 18),
                             TextFormField(
                               controller: _emailController,
+                              style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                 hintText: 'Digite o seu email',
-                                filled: true,
-                                fillColor: Colors.grey.shade100,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
                                   borderSide: BorderSide.none,
@@ -116,10 +115,9 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(height: 12),
                             TextFormField(
                               controller: _senhaController,
+                              style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                 hintText: 'Digite sua senha',
-                                filled: true,
-                                fillColor: Colors.grey.shade100,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
                                   borderSide: BorderSide.none,

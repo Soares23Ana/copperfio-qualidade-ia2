@@ -132,8 +132,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         decoration: InputDecoration(
                           labelText: 'Código do Lote',
                           hintText: 'Digite ou escaneie o código',
-                          filled: true,
-                          fillColor: Colors.white,
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.qr_code),
                             onPressed: () {
@@ -166,8 +164,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           labelText: 'Seu Feedback',
                           hintText:
                               'Descreva a sua experiência com o nosso atendimento',
-                          filled: true,
-                          fillColor: Colors.white,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:projeto_integrado/features/chamados/viewmodel/chamados_viewmodel.dart';
 
 class TicketCreatePage extends StatefulWidget {
   const TicketCreatePage({super.key});
@@ -9,29 +11,43 @@ class TicketCreatePage extends StatefulWidget {
 
 class _TicketCreatePageState extends State<TicketCreatePage> {
   final _formKey = GlobalKey<FormState>();
-  final _lotController = TextEditingController();
+  final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+  String? _selectedPriority = 'media';
   String? _selectedCategory;
-
-  final List<String> _categories = [
-    'Qualidade',
-    'Logística',
-    'Segurança',
-    'Manutenção',
-  ];
+  final List<String> _priorities = ['baixa', 'media', 'alta'];
+  final List<String> _categories = ['Técnico', 'Administrativo', 'Financeiro', 'Outros'];
 
   @override
   void dispose() {
-    _lotController.dispose();
+    _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
 
-  void _sendTicket() {
+  Future<void> _sendTicket() async {
     if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Chamado enviado com sucesso!')),
-      );
+      try {
+        final viewModel = Provider.of<ChamadosViewModel>(context, listen: false);
+        await viewModel.criarChamado(
+          titulo: _titleController.text,
+          descricao: _descriptionController.text,
+          prioridade: _selectedPriority ?? 'media',
+        );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Chamado criado com sucesso!')),
+          );
+          Navigator.maybePop(context);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro ao criar chamado: $e')),
+          );
+        }
+      }
     }
   }
 
@@ -53,11 +69,6 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _buildFormCard(context),
               ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _buildEvidenceCard(),
-              ),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -67,9 +78,8 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                       child: ElevatedButton(
                         onPressed: _sendTicket,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF9C1818),
-                          side: const BorderSide(color: Color(0xFF9C1818)),
+                          backgroundColor: const Color(0xFF9C1818),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -79,7 +89,7 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                           'Enviar Chamado',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Color(0xFF9C1818),
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -135,7 +145,7 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
-                    'Novo Chamado/Reclamação',
+                    'Novo Chamado',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -174,7 +184,7 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        'Central de Chamados/',
+                        'Central de Chamados',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -183,7 +193,7 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                       ),
                       SizedBox(height: 6),
                       Text(
-                        'Reclamações',
+                        'Descreva seu problema ou solicitação',
                         style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                     ],
@@ -199,107 +209,44 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
 
   Widget _buildFormCard(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Central de Chamados/Reclamações',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              _buildFieldLabel('Identificação do Produto/Lote'),
+              _buildFieldLabel('Título do Chamado'),
               const SizedBox(height: 8),
               _buildInputField(
-                controller: _lotController,
-                hintText: 'Selecione ou digite o lote',
-                suffixIcon: Icons.qr_code_scanner,
+                controller: _titleController,
+                hintText: 'Digite um título breve',
+                suffixIcon: Icons.title,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Informe o produto ou lote';
+                    return 'Campo obrigatório';
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
-              _buildFieldLabel('Categoria do Problema'),
+              const SizedBox(height: 20),
+              _buildFieldLabel('Categoria'),
               const SizedBox(height: 8),
               _buildDropdownField(),
-              const SizedBox(height: 16),
-              _buildFieldLabel('Descrição Detalhada do Ocorrido'),
+              const SizedBox(height: 20),
+              _buildFieldLabel('Prioridade'),
+              const SizedBox(height: 8),
+              _buildPriorityField(),
+              const SizedBox(height: 20),
+              _buildFieldLabel('Descrição'),
               const SizedBox(height: 8),
               _buildDescriptionField(),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEvidenceCard() {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Anexar Evidências (fotos/vídeos)',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.camera_alt,
-                      color: Color(0xFF9C1818),
-                    ),
-                    label: const Text(
-                      'Tirar foto',
-                      style: TextStyle(color: Color(0xFF9C1818)),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Color(0xFF9C1818)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.videocam, color: Color(0xFF9C1818)),
-                    label: const Text(
-                      'Gravar Video',
-                      style: TextStyle(color: Color(0xFF9C1818)),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Color(0xFF9C1818)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );
@@ -369,6 +316,29 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
           }
           return null;
         },
+      ),
+    );
+  }
+
+  Widget _buildPriorityField() {
+    return DropdownButtonFormField<String>(
+      value: _selectedPriority,
+      items: _priorities.map((priority) {
+        return DropdownMenuItem(
+          value: priority,
+          child: Text(priority.replaceFirst(priority[0], priority[0].toUpperCase())),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedPriority = value;
+        });
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     );
   }

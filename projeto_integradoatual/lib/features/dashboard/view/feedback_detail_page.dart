@@ -27,7 +27,7 @@ class FeedbackDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 226, 48, 32),
+        backgroundColor: const Color(0xFFB71C1C),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Detalhes do Feedback',

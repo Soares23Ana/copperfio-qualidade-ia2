@@ -62,10 +62,12 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = const Color(0xFF8C1D18);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF0F0F5),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFB02820),
+        backgroundColor: primaryColor,
         centerTitle: true,
         elevation: 0,
         // COR DA SETA: Definida via iconTheme
@@ -82,7 +84,7 @@ class _ContactPageState extends State<ContactPage> {
           children: [
             Container(
               width: double.infinity,
-              color: const Color(0xFFB02820),
+              color: primaryColor,
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               child: Row(
                 children: [
@@ -196,8 +198,6 @@ class _ContactPageState extends State<ContactPage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        filled: true,
-                        fillColor: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -205,7 +205,7 @@ class _ContactPageState extends State<ContactPage> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFB02820),
+                          backgroundColor: primaryColor,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -250,8 +250,6 @@ class _ContactPageState extends State<ContactPage> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        filled: true,
-        fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 12,
