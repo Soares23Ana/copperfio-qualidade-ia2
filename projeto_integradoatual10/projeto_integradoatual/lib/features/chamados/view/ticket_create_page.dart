@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:projeto_integrado/features/chamados/viewmodel/chamados_viewmodel.dart';
+import '../../../core/theme_provider.dart';
 
 class TicketCreatePage extends StatefulWidget {
   const TicketCreatePage({super.key});
@@ -16,7 +17,12 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
   String? _selectedPriority = 'media';
   String? _selectedCategory;
   final List<String> _priorities = ['baixa', 'media', 'alta'];
-  final List<String> _categories = ['Técnico', 'Administrativo', 'Financeiro', 'Outros'];
+  final List<String> _categories = [
+    'Técnico',
+    'Administrativo',
+    'Financeiro',
+    'Outros',
+  ];
 
   @override
   void dispose() {
@@ -28,7 +34,10 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
   Future<void> _sendTicket() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        final viewModel = Provider.of<ChamadosViewModel>(context, listen: false);
+        final viewModel = Provider.of<ChamadosViewModel>(
+          context,
+          listen: false,
+        );
         await viewModel.criarChamado(
           titulo: _titleController.text,
           descricao: _descriptionController.text,
@@ -43,9 +52,9 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Erro ao criar chamado: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Erro ao criar chamado: $e')));
         }
       }
     }
@@ -57,17 +66,32 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+    final primaryColor = const Color(0xFF8C1D18);
+    final bgColor = isDark ? const Color(0xFF121212) : const Color(0xFFF3F1F6);
+    final cardColor = isDark ? const Color(0xFF1F1F1F) : Colors.white;
+    final fieldColor = isDark
+        ? const Color(0xFF2B2B2B)
+        : const Color(0xFFF7F7F9);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F1F6),
+      backgroundColor: bgColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildHeader(context),
+              _buildHeader(context, isDark, themeProvider),
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _buildFormCard(context),
+                child: _buildFormCard(
+                  context,
+                  isDark,
+                  primaryColor,
+                  cardColor,
+                  fieldColor,
+                ),
               ),
               const SizedBox(height: 20),
               Padding(
@@ -99,18 +123,29 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                       child: OutlinedButton(
                         onPressed: _cancel,
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: const BorderSide(color: Color(0xFF9C1818)),
+                          backgroundColor: isDark
+                              ? const Color(0xFF1F1F1F)
+                              : Colors.white,
+                          side: BorderSide(
+                            color: isDark
+                                ? Colors.white24
+                                : const Color(0xFF9C1818),
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
+                          foregroundColor: isDark
+                              ? Colors.white
+                              : const Color(0xFF9C1818),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Cancelar',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Color(0xFF9C1818),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF9C1818),
                           ),
                         ),
                       ),
@@ -126,7 +161,11 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(
+    BuildContext context,
+    bool isDark,
+    ThemeProvider themeProvider,
+  ) {
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xFF9C1818),
@@ -152,6 +191,13 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    isDark ? Icons.light_mode : Icons.dark_mode,
+                    color: Colors.white,
+                  ),
+                  onPressed: themeProvider.toggleTheme,
                 ),
               ],
             ),
@@ -207,12 +253,17 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
     );
   }
 
-  Widget _buildFormCard(BuildContext context) {
+  Widget _buildFormCard(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color cardColor,
+    Color fieldColor,
+  ) {
     return Card(
+      color: cardColor,
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -220,12 +271,14 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFieldLabel('Título do Chamado'),
+              _buildFieldLabel('Título do Chamado', isDark),
               const SizedBox(height: 8),
               _buildInputField(
                 controller: _titleController,
                 hintText: 'Digite um título breve',
                 suffixIcon: Icons.title,
+                isDark: isDark,
+                fieldColor: fieldColor,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Campo obrigatório';
@@ -234,17 +287,17 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
                 },
               ),
               const SizedBox(height: 20),
-              _buildFieldLabel('Categoria'),
+              _buildFieldLabel('Categoria', isDark),
               const SizedBox(height: 8),
-              _buildDropdownField(),
+              _buildDropdownField(isDark, fieldColor),
               const SizedBox(height: 20),
-              _buildFieldLabel('Prioridade'),
+              _buildFieldLabel('Prioridade', isDark),
               const SizedBox(height: 8),
-              _buildPriorityField(),
+              _buildPriorityField(isDark),
               const SizedBox(height: 20),
-              _buildFieldLabel('Descrição'),
+              _buildFieldLabel('Descrição', isDark),
               const SizedBox(height: 8),
-              _buildDescriptionField(),
+              _buildDescriptionField(isDark, fieldColor),
             ],
           ),
         ),
@@ -252,10 +305,14 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
     );
   }
 
-  Widget _buildFieldLabel(String label) {
+  Widget _buildFieldLabel(String label, bool isDark) {
     return Text(
       label,
-      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+        color: isDark ? Colors.white : Colors.black87,
+      ),
     );
   }
 
@@ -263,46 +320,82 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
     required TextEditingController controller,
     required String hintText,
     required IconData suffixIcon,
+    required bool isDark,
+    required Color fieldColor,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
+      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
       decoration: InputDecoration(
         hintText: hintText,
+        hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.grey[600]),
         filled: true,
-        fillColor: const Color(0xFFF7F7F9),
-        suffixIcon: Icon(suffixIcon, color: const Color(0xFF9C1818)),
+        fillColor: fieldColor,
+        suffixIcon: Icon(
+          suffixIcon,
+          color: isDark ? Colors.white70 : const Color(0xFF9C1818),
+        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: isDark ? Colors.white12 : Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white12 : Colors.transparent,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white24 : Colors.black26,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildDropdownField() {
+  Widget _buildDropdownField(bool isDark, Color fieldColor) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F9),
+        color: fieldColor,
         borderRadius: BorderRadius.circular(18),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: DropdownButtonFormField<String>(
         value: _selectedCategory,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           hintText: 'Selecione a categoria',
+          hintStyle: TextStyle(
+            color: isDark ? Colors.white54 : Colors.grey[600],
+          ),
           border: InputBorder.none,
         ),
-        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF9C1818)),
+        icon: Icon(
+          Icons.arrow_drop_down,
+          color: isDark ? Colors.white70 : const Color(0xFF9C1818),
+        ),
+        dropdownColor: fieldColor,
+        style: TextStyle(color: isDark ? Colors.white : Colors.black87),
         items: _categories
             .map(
-              (category) =>
-                  DropdownMenuItem(value: category, child: Text(category)),
+              (category) => DropdownMenuItem(
+                value: category,
+                child: Text(
+                  category,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ),
             )
             .toList(),
         onChanged: (value) {
@@ -320,13 +413,17 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
     );
   }
 
-  Widget _buildPriorityField() {
+  Widget _buildPriorityField(bool isDark) {
     return DropdownButtonFormField<String>(
       value: _selectedPriority,
+      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
       items: _priorities.map((priority) {
         return DropdownMenuItem(
           value: priority,
-          child: Text(priority.replaceFirst(priority[0], priority[0].toUpperCase())),
+          child: Text(
+            priority.replaceFirst(priority[0], priority[0].toUpperCase()),
+            style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+          ),
         );
       }).toList(),
       onChanged: (value) {
@@ -334,19 +431,39 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
           _selectedPriority = value;
         });
       },
+      dropdownColor: isDark ? const Color(0xFF2B2B2B) : Colors.white,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: isDark ? const Color(0xFF2B2B2B) : Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white12 : Colors.black26,
+          ),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white12 : Colors.black26,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: isDark ? Colors.white24 : Colors.black),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
     );
   }
 
-  Widget _buildDescriptionField() {
+  Widget _buildDescriptionField(bool isDark, Color fieldColor) {
     return TextFormField(
       controller: _descriptionController,
       maxLines: 5,
+      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Descreva o ocorrido';
@@ -355,8 +472,9 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
       },
       decoration: InputDecoration(
         hintText: 'Descreva em detalhes o ocorrido',
+        hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.grey[600]),
         filled: true,
-        fillColor: const Color(0xFFF7F7F9),
+        fillColor: fieldColor,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
@@ -364,6 +482,18 @@ class _TicketCreatePageState extends State<TicketCreatePage> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white12 : Colors.transparent,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white24 : Colors.black26,
+          ),
         ),
       ),
     );

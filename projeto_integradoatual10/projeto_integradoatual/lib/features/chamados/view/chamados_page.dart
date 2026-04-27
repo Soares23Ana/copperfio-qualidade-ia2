@@ -31,7 +31,7 @@ class _ChamadosPageState extends State<ChamadosPage> {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDark ? Colors.transparent : const Color(0xFF8C1D18),
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: primaryColor),

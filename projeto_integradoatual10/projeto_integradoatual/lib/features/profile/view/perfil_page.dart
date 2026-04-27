@@ -3,33 +3,41 @@ import 'package:provider/provider.dart';
 import '../../auth/view/login_page.dart';
 import '../../chamados/view/user_chamados_page.dart';
 import '../../../core/theme_provider.dart';
+import '../../../services/auth_service.dart';
+import 'atualizar_perfil_page.dart';
+import 'historico_page.dart';
+import 'itens_salvos_page.dart';
+import 'meus_feedbacks_page.dart';
+import 'notificacoes_page.dart';
+import 'seu_nivel_page.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+    final headerColor = isDark ? Theme.of(context).colorScheme.primary : const Color(0xFF9C1818);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
+        backgroundColor: headerColor,
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Perfil', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         elevation: 0,
         actions: [
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return IconButton(
-                icon: Icon(
-                  themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  themeProvider.toggleTheme();
-                },
-                tooltip: themeProvider.isDarkMode ? 'Modo Claro' : 'Modo Noturno',
-              );
+          IconButton(
+            icon: Icon(
+              isDark ? Icons.light_mode : Icons.dark_mode,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              themeProvider.toggleTheme();
             },
+            tooltip: isDark ? 'Modo Claro' : 'Modo Noturno',
           ),
         ],
       ),
@@ -38,7 +46,7 @@ class PerfilPage extends StatelessWidget {
           children: [
             // Header com avatar
             Container(
-              color: Theme.of(context).colorScheme.primary,
+              color: headerColor,
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,13 +77,22 @@ class PerfilPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Usuário copperfio',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            FutureBuilder<Map<String, dynamic>?>(
+                              future: AuthService().getCurrentUserData(),
+                              builder: (context, snapshot) {
+                                String userName = 'Usuário';
+                                if (snapshot.hasData && snapshot.data != null) {
+                                  userName = snapshot.data!['nome'] ?? 'Usuário';
+                                }
+                                return Text(
+                                  userName,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(height: 4),
                             Container(
@@ -113,68 +130,42 @@ class PerfilPage extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.white),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Editar perfil')),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AtualizarPerfilPage(),
+                            ),
                           );
                         },
                       ),
                     ],
                   ),
                   const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(
-                              color: Colors.white,
-                              width: 1.5,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                          ),
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Atualizar perfil de usuário'),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Atualizar perfil de usuário',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      foregroundColor: Theme.of(context).colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.surface,
-                            foregroundColor: Theme.of(context).colorScheme.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                          ),
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Atualizar agora')),
-                            );
-                          },
-                          child: const Text(
-                            'Atualizar agora',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+                      minimumSize: const Size(double.infinity, 0),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AtualizarPerfilPage(),
                         ),
+                      );
+                    },
+                    child: const Text(
+                      'Atualizar perfil',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -186,9 +177,16 @@ class PerfilPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildIconCard('Pedidos', Icons.shopping_bag),
-                  _buildIconCard('FeedBacks', Icons.comment),
-                  _buildIconCard('Ajuda', Icons.help),
+                  _buildIconCard('Pedidos', Icons.shopping_bag, () {}),
+                  _buildIconCard('FeedBacks', Icons.comment, () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const MeusFeedbacksPage(),
+                      ),
+                    );
+                  }),
+                  _buildIconCard('Ajuda', Icons.help, () {}),
                 ],
               ),
             ),
@@ -199,12 +197,12 @@ class PerfilPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Minha Conta',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -221,17 +219,30 @@ class PerfilPage extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        _buildMenuItem('Itens Salvos', Icons.favorite, () {}),
+                        _buildMenuItem('Itens Salvos', Icons.favorite, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const ItensSalvosPage()),
+                          );
+                        }),
                         _buildMenuDivider(),
-                        _buildMenuItem('Histórico', Icons.history, () {}),
+                        _buildMenuItem('Histórico', Icons.history, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const HistoricoPage()),
+                          );
+                        }),
                         _buildMenuDivider(),
                         _buildMenuItem(
                           'Notificações',
                           Icons.notifications,
-                          () {},
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const NotificacoesPage()),
+                            );
+                          },
                         ),
-                        _buildMenuDivider(),
-                        _buildMenuItem('Endereço', Icons.location_on, () {}),
                         _buildMenuDivider(),
                         _buildMenuItem(
                           'Meus Chamados',
@@ -260,7 +271,7 @@ class PerfilPage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(
@@ -268,9 +279,9 @@ class PerfilPage extends StatelessWidget {
                         Icons.trending_up,
                         color: Color(0xFFB02820),
                       ),
-                      title: const Text(
+                      title: Text(
                         'Seu Nível',
-                        style: TextStyle(color: Colors.black87),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                       ),
                       trailing: const Icon(
                         Icons.arrow_forward_ios,
@@ -278,8 +289,9 @@ class PerfilPage extends StatelessWidget {
                         color: Colors.grey,
                       ),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Seu Nível: Prata')),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SeuNivelPage()),
                         );
                       },
                     ),
@@ -296,9 +308,9 @@ class PerfilPage extends StatelessWidget {
                         Icons.logout,
                         color: Color(0xFFB02820),
                       ),
-                      title: const Text(
+                      title: Text(
                         'Sair da Conta',
-                        style: TextStyle(color: Colors.black87),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                       ),
                       onTap: () {
                         showDialog(
@@ -342,50 +354,63 @@ class PerfilPage extends StatelessWidget {
     );
   }
 
-  Widget _buildIconCard(String label, IconData icon) {
-    return Column(
-      children: [
-        Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            color: const Color(0xFFB02820),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, size: 32, color: Colors.white),
+  Widget _buildIconCard(String label, IconData icon, VoidCallback onTap) {
+    return Builder(
+      builder: (context) => GestureDetector(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                color: const Color(0xFFB02820),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 32, color: Colors.white),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-        ),
-      ],
+      ),
     );
   }
 
   Widget _buildMenuItem(String label, IconData icon, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFFB02820), size: 24),
-      title: Text(
-        label,
-        style: const TextStyle(color: Colors.black87, fontSize: 14),
+    return Builder(
+      builder: (context) => ListTile(
+        leading: Icon(icon, color: const Color(0xFFB02820), size: 24),
+        title: Text(
+          label,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 14),
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+        ),
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: Colors.grey,
-      ),
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     );
   }
 
   Widget _buildMenuDivider() {
-    return Divider(
-      height: 1,
-      color: Colors.grey.shade300,
-      indent: 16,
-      endIndent: 16,
+    return Builder(
+      builder: (context) => Divider(
+        height: 1,
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+        indent: 16,
+        endIndent: 16,
+      ),
     );
   }
 }

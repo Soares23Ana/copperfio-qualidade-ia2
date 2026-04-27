@@ -37,7 +37,7 @@ class _AddUserPageState extends State<AddUserPage> {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDark ? Colors.transparent : const Color(0xFF8C1D18),
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
