@@ -44,15 +44,3 @@ Descrição: Painel administrativo e gerencial exclusivo para a equipe interna a
 - **US42 — Analisar Feedbacks**
   - Como gestor, quero ler as avaliações e os feedbacks dos clientes no meu painel para entender o que precisa ser melhorado na operação.
 
----
-
-## Observações
-- Cada épico pode ter quantas stories forem necessárias.
-- O backlog inicial contém apenas épicos + primeiras stories de alto nível.
-- Stories devem seguir o modelo:
-  - **Como [ator], quero [intenção] para [benefício].**
-
-## Próximos passos
-- Priorizar stories (MoSCoW ou MVP).
-- Converter stories em tarefas técnicas.
-- Criar issues no GitHub correspondentes.
