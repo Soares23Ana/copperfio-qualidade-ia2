@@ -75,4 +75,11 @@ Para facilitar a navegação, acesse os documentos detalhados abaixo:
 
 ```bash
 flutter pub get
+```
+2. Execute o app:
+
+```bash
+flutter run
+```
+
 
