@@ -1,32 +1,49 @@
-# Arquitetura do Sistema e Microsserviços de IA
+# Arquitetura do Sistema Copperfio
 
-Este documento descreve a topologia do sistema de Qualidade e Vendas da Copperfio. O sistema é dividido em três camadas principais: Front-end (Interfaces), Back-end (Core API) e os Serviços de IA.
+Este documento descreve a arquitetura do aplicativo Flutter para o sistema de qualidade Copperfio.
 
-## 1. Interfaces (Front-end)
-* **Web Cliente:** Aplicação leve em HTML5/JS (React ou Next.js) acedida via link único de e-mail. Tem acesso à API do navegador para capturar áudio (WebRTC) e fotos (Câmera).
-* **Mobile Gestor:** Aplicação nativa para iOS/Android. Conecta-se via WebSockets para receber *Push Notifications* (Alertas Vermelhos) em tempo real.
+## Camadas do sistema
 
-## 2. API Principal (Back-end Core)
-Desenvolvida em Node.js ou Python (FastAPI). É responsável por:
-* Validar a autenticidade do link (QR Code / Assinatura Digital).
-* Receber o *payload* do cliente (Texto, Áudio, Foto).
-* Orquestrar as chamadas para os microsserviços de IA.
-* Guardar o resultado de forma rastreável e auditável na base de dados.
+### 1. Apresentação (Front-end)
+- Aplicativo Flutter mobile.
+- Estrutura em `lib/features/` por módulos:
+  - `auth/` — telas de login, cadastro, recuperação de senha.
+  - `home/` — telas iniciais de cliente e gestor.
+  - `chamados/` — criação, lista e detalhes de chamados.
+  - `dashboard/` — painéis, gráficos e alertas para gestor.
+  - `chat/` — conversas e histórico de mensagens.
+  - `profile/` — perfil e informações do usuário.
+- UI responsiva e tema claro/escuro usando `provider`.
 
-## 3. Microsserviços de IA (Processamento Descentralizado)
-Para garantir performance, cada IA atua como um serviço independente:
+### 2. Dados e serviços
+- `lib/data/` contém modelos e repositórios de dados.
+- `lib/services/` contém integração com Firebase:
+  - `AuthService` para autenticação de usuários.
+  - `FirestoreService` para leitura e gravação de feedbacks, chamados e contagens.
+  - `NotificationService` para notificações locais.
+- `lib/core/` contém provedores de estado e tema.
 
-### A. Módulo de Sentimento (NLP & Speech-to-Text)
-* **Entrada:** Texto livre ou ficheiro de áudio.
-* **Processamento:** Transcreve o áudio para texto. De seguida, o modelo de NLP analisa o tom (ex: sarcasmo, frustração subtil) que não é refletido numa nota numérica.
-* **Saída:** *Score* de sentimento (0.0 a 1.0) e *tags* de emoção.
+### 3. Backend
+- O backend é o Firebase:
+  - `Firebase Auth` para login, cadastro e recuperação de senha.
+  - `Cloud Firestore` para persistência de dados em tempo real.
+  - `Firebase Storage` para upload de imagens de feedback.
+- O app usa `firebase_options.dart` para configuração das plataformas.
 
-### B. Módulo de Visão Computacional (OCR & Qualidade)
-* **Entrada:** Fotografia tirada pelo cliente.
-* **Processamento:** Extrai o número de série da etiqueta (OCR) e utiliza um modelo treinado para detetar anomalias (ex: caixas amassadas, fios danificados).
-* **Saída:** Lote identificado e status de integridade visual (Passou/Falhou).
+## Fluxo principal
+1. O usuário abre o app e vê a `SplashIntroPage`.
+2. O app inicializa o Firebase e notificação.
+3. O usuário faz login ou cadastro.
+4. Conforme o tipo de usuário:
+   - cliente acessa catálogo, feedback, chat e chamados;
+   - gestor acessa dashboard, alertas, feedbacks e gestão de chamados.
 
-### C. Módulo Preditivo (Risco de Churn)
-* **Entrada:** Nota atual + Score de Sentimento + Histórico do Cliente.
-* **Processamento:** Modelo de *Machine Learning* compara a variação do padrão (ex: Cliente que dava 10, deu 7 e o NLP detetou frustração).
-* **Saída:** Sinalizador de Risco (Verde, Amarelo, Vermelho). Se Vermelho, dispara o Webhook para o App do Gestor.
+## Tecnologias
+- Flutter
+- Provider
+- Firebase Auth
+- Cloud Firestore
+- Firebase Storage
+- Flutter Local Notifications
+- fl_chart
+- shared_preferences
