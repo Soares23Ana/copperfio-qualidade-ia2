@@ -27,5 +27,5 @@ Para que um chamado/reclamação seja enviado com sucesso, o campo "Descrição 
 Todo chamado ou reclamação enviado pelo cliente deve ser registrado no banco de dados e aparecer no dashboard do gestor com o status automático inicial de "Pendente" (ou "Em Aberto").
 
 
-### RN08 — Anonimato no Feedback (Opcional para o usuário)
-Ao avaliar a experiência, o cliente deve ter a opção de enviar o feedback para opinar sobre o produto, com o gestor tendo acesso ao nome de quem enviou
+### RN08 — Rastreabilidade de Avaliações
+Para fins de análise estratégica e acompanhamento de satisfação por cliente, todos os feedbacks serão identificados. O gestor terá acesso ao nome e histórico do usuário que realizou a avaliação, facilitando a resolução de críticas e o reconhecimento de elogios.
