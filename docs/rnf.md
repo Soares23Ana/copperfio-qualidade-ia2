@@ -7,7 +7,7 @@
   - O sistema deve possuir alta estabilidade, estando disponível e operante 99,5% do tempo mensal.
 
 - **RNF03 — Segurança de dados**
-  - As senhas de todos os usuários devem ser armazenadas no banco de dados usando algoritmos de hashing fortes (como bcrypt ou Argon2).
+  - As senhas de todos os usuários devem ser armazenadas no banco de dados usando algoritmos de hashing fortes.
 
 - **RNF04 — Desempenho de envio de e-mails**
   - O envio do e-mail para recuperação de senha deve ser disparado pelo sistema em, no máximo, 1 minuto após a solicitação do usuário.
