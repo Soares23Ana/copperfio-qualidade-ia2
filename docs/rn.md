@@ -1,31 +1,25 @@
 # Regras de Negócio (RN)
-### RN01 — Complexidade de senha
-Tanto no cadastro quanto na redefinição, a senha criada pelo usuário deve conter no mínimo 8 caracteres, incluindo pelo menos uma letra maiúscula, um número e um caractere especial (ex: @, #, !).
 
+- **RN01 — Complexidade de senha**
+  - Tanto no cadastro quanto na redefinição, a senha criada pelo usuário deve conter no mínimo 8 caracteres, incluindo pelo menos uma letra maiúscula, um número e um caractere especial (ex: @, #, !).
 
-### RN02 — Validade do token de recuperação
-O link de redefinição de senha enviado para o e-mail do usuário (somente ele tera acesso)  logo depois da senha definida ele ira voltar para a pagina de login
+- **RN02 — Validade do token de recuperação**
+  - O link de redefinição de senha enviado para o e-mail do usuário deve expirar após uso e direcionar o usuário para a página de login após a alteração.
 
+- **RN03 — Uso único do link de recuperação**
+  - Após o usuário redefinir a senha com sucesso, o link utilizado perde a validade imediatamente, não podendo ser reaproveitado.
 
-### RN03 — Uso único do link de recuperação
-Após o usuário redefinir a senha com sucesso, o link utilizado perde a validade imediatamente, não podendo ser reaproveitado.
+- **RN04 — Unicidade de e-mail**
+  - O sistema não deve permitir a criação de mais de uma conta utilizando o mesmo endereço de e-mail. O e-mail é o identificador único de cada usuário.
 
+- **RN05 — Restrição de acesso ao Dashboard**
+  - Apenas usuários autenticados com o nível de permissão "Gestor" ou "Administrador" podem visualizar a tela do dashboard, métricas de feedback e acessar os chamados dos clientes.
 
-### RN04 — Unicidade de e-mail
-O sistema não deve permitir a criação de mais de uma conta utilizando o mesmo endereço de e-mail. O e-mail é o identificador único de cada usuário.
+- **RN06 — Obrigatoriedade na abertura de chamados**
+  - Para que um chamado/reclamação seja enviado com sucesso, o campo "Descrição do ocorrido" é de preenchimento obrigatório.
 
+- **RN07 — Status inicial de chamados**
+  - Todo chamado ou reclamação enviado pelo cliente deve ser registrado no banco de dados e aparecer no dashboard do gestor com o status inicial de "Pendente" ou "Em Aberto".
 
-### RN05 — Restrição de acesso ao Dashboard
-Apenas usuários autenticados com o nível de permissão "Gestor" ou "Administrador" podem visualizar a tela do dashboard, métricas de feedback e acessar os chamados dos clientes. 
-
-
-### RN06 — Obrigatoriedade na abertura de chamados
-Para que um chamado/reclamação seja enviado com sucesso, o campo "Descrição do ocorrido" é de preenchimento obrigatório garantindo que o gestor tenha contexto suficiente para resolver o problema.
-
-
-### RN07 — Status inicial de chamados
-Todo chamado ou reclamação enviado pelo cliente deve ser registrado no banco de dados e aparecer no dashboard do gestor com o status automático inicial de "Pendente" (ou "Em Aberto").
-
-
-### RN08 — Rastreabilidade de Avaliações
-Para fins de análise estratégica e acompanhamento de satisfação por cliente, todos os feedbacks serão identificados. O gestor terá acesso ao nome e histórico do usuário que realizou a avaliação, facilitando a resolução de críticas e o reconhecimento de elogios.
+- **RN08 — Rastreabilidade de avaliações**
+  - Todos os feedbacks serão identificados para análise estratégica: o gestor terá acesso ao nome e histórico do usuário que realizou a avaliação, facilitando a resolução de críticas e o reconhecimento de elogios.
