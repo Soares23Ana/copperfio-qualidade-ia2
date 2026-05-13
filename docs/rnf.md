@@ -1,7 +1,7 @@
 # Requisitos Não Funcionais (RNF)
 
 - **RNF01 — Tempo de resposta**
-  - As telas principais (como login, carregamento do catálogo e dashboard) devem responder e carregar em até 2 segundos.
+  - As telas principais (como login, carregamento do catálogo e dashboard) devem responder e carregar em até 3 segundos.
 
 - **RNF02 — Disponibilidade**
   - O sistema deve possuir alta estabilidade, estando disponível e operante 99,5% do tempo mensal.
