@@ -50,6 +50,9 @@
 **RF Relacionados:** RF03, RF04  
 **RNF Relacionados:** RNF02  
 
+
+<img width="1536" height="1024" alt="Copilot_20260512_213220" src="https://github.com/user-attachments/assets/13e09892-eb32-42d0-9c34-dfa30c149396" />
+
 ---
 
 #### UC03 — Enviar Feedback e Avaliação
@@ -70,6 +73,9 @@
 5. O sistema salva o feedback em tempo real no Firebase.
 
 **RF Relacionados:** RF08  
+
+
+<img width="1536" height="1024" alt="Copilot_20260512_213045" src="https://github.com/user-attachments/assets/26a3788f-3490-495c-b726-4a5ab0342fa5" />
 
 ---
 
@@ -92,6 +98,7 @@
 
 **RF Relacionados:** RF09, RF10, RF11  
 
+
 ---
 
 #### UC05 — Visualizar Dashboard
@@ -110,6 +117,9 @@
 3. O gestor visualiza gráficos e indicadores de performance.
 
 **RF Relacionados:** RF15  
+
+
+<img width="1536" height="1024" alt="Copilot_20260512_213206" src="https://github.com/user-attachments/assets/a55ac965-4fbb-416d-8677-1eceb9e88838" />
 
 ---
 
@@ -133,6 +143,9 @@
 - **A1 — Descrição vazia:** O sistema impede envio e alerta obrigatoriedade.
 
 **RF Relacionados:** RF16  
+
+
+<img width="1536" height="1024" alt="Copilot_20260512_213133" src="https://github.com/user-attachments/assets/96cbd1a3-861d-4924-a8c2-a4664546aaeb" />
 
 ---
 
