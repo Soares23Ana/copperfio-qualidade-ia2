@@ -24,6 +24,9 @@
 **RF Relacionados:** RF02  
 **RNF Relacionados:** RNF01, RNF03  
 
+
+<img width="1536" height="1024" alt="Copilot_20260512_220052" src="https://github.com/user-attachments/assets/1bcd4df2-69df-41de-be99-9a75c112ae48" />
+
 ---
 
 #### UC02 — Recuperar Senha
@@ -51,7 +54,9 @@
 **RNF Relacionados:** RNF02  
 
 
-<img width="1536" height="1024" alt="Copilot_20260512_213220" src="https://github.com/user-attachments/assets/13e09892-eb32-42d0-9c34-dfa30c149396" />
+
+<img width="1536" height="1024" alt="Copilot_20260512_220305" src="https://github.com/user-attachments/assets/9e30c0e3-c8a8-4bd8-a859-96e9d8f6d4ae" />
+
 
 ---
 
@@ -75,7 +80,9 @@
 **RF Relacionados:** RF08  
 
 
-<img width="1536" height="1024" alt="Copilot_20260512_213045" src="https://github.com/user-attachments/assets/26a3788f-3490-495c-b726-4a5ab0342fa5" />
+
+<img width="1536" height="1024" alt="Copilot_20260512_220538" src="https://github.com/user-attachments/assets/8de69260-688d-4f3a-8bcb-2c5305a056ac" />
+
 
 ---
 
@@ -99,6 +106,8 @@
 **RF Relacionados:** RF09, RF10, RF11  
 
 
+<img width="1536" height="1024" alt="Copilot_20260512_220807" src="https://github.com/user-attachments/assets/ac2f1d4c-7f11-478e-986b-667be97148b8" />
+
 ---
 
 #### UC05 — Visualizar Dashboard
@@ -119,7 +128,8 @@
 **RF Relacionados:** RF15  
 
 
-<img width="1536" height="1024" alt="Copilot_20260512_213206" src="https://github.com/user-attachments/assets/a55ac965-4fbb-416d-8677-1eceb9e88838" />
+
+<img width="1536" height="1024" alt="Copilot_20260512_221000" src="https://github.com/user-attachments/assets/16fed8bd-ef5c-4e1d-bcbe-5a8d9031d1dd" />
 
 ---
 
@@ -145,7 +155,9 @@
 **RF Relacionados:** RF16  
 
 
-<img width="1536" height="1024" alt="Copilot_20260512_213133" src="https://github.com/user-attachments/assets/96cbd1a3-861d-4924-a8c2-a4664546aaeb" />
+
+<img width="1536" height="1024" alt="Copilot_20260512_221123" src="https://github.com/user-attachments/assets/f1ff10d8-c888-4df3-b1ef-7a7817f194fd" />
+
 
 ---
 
