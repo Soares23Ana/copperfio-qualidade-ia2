@@ -1,6 +1,7 @@
-# Casos de Uso
+## CASOS DE USO (UC)
 
-## UC01 — Cadastrar Usuário
+#### UC01 — Cadastrar Usuário
+
 **Ator Principal:** Visitante
 
 **Objetivo:** Criar uma nova conta para acessar as funcionalidades do sistema.
@@ -12,23 +13,21 @@
 **Fluxo Principal:**
 1. O visitante acessa a opção "Cadastrar".
 2. O visitante insere nome, e-mail e define uma senha.
-3. O sistema valida a unicidade do e-mail (RN04).
-4. O sistema valida a complexidade da senha (RN01).
+3. O sistema valida a unicidade do e-mail.
+4. O sistema valida a complexidade da senha.
 5. O sistema armazena os dados e confirma o cadastro.
 
 **Fluxos Alternativos:**
-- **A1 — E-mail já cadastrado:**
-  - O sistema exibe mensagem de erro e solicita outro e-mail.
-- **A2 — Senha fraca:**
-  - O sistema alerta que a senha não atende aos requisitos da RN01.
+- **A1 — E-mail já cadastrado:** O sistema exibe mensagem de erro e solicita outro e-mail.
+- **A2 — Senha fraca:** O sistema alerta que a senha não atende aos requisitos da complexidade.
 
 **RF Relacionados:** RF02  
-**RNF Relacionados:** RNF03, RNF05  
-**RN Relacionadas:** RN01, RN04
+**RNF Relacionados:** RNF01, RNF03  
 
 ---
 
-## UC02 — Recuperar Senha
+#### UC02 — Recuperar Senha
+
 **Ator Principal:** Usuário (Cliente/Gestor)
 
 **Objetivo:** Redefinir a senha de acesso após esquecimento.
@@ -39,22 +38,22 @@
 
 **Fluxo Principal:**
 1. O usuário clica em "Esqueceu a senha" e informa o e-mail.
-2. O sistema envia um link único para o e-mail do usuário (RN02).
+2. O sistema envia um link único para o e-mail do usuário (válido por 24 horas).
 3. O usuário acessa o link e insere a nova senha conforme as regras de complexidade.
-4. O sistema valida a nova senha, atualiza o banco e invalida o link (RN03).
+4. O sistema valida a nova senha, atualiza o banco e invalida o link.
 5. O usuário é redirecionado para a tela de login.
 
 **Fluxos Alternativos:**
-- **A1 — E-mail não encontrado:** o sistema informa que o e-mail não consta na base.
-- **A2 — Link expirado ou já utilizado:** o sistema impede o acesso à tela de redefinição.
+- **A1 — E-mail não encontrado:** O sistema informa que o e-mail não consta na base.
+- **A2 — Link expirado ou já utilizado:** O sistema impede o acesso à tela de redefinição.
 
 **RF Relacionados:** RF03, RF04  
-**RNF Relacionados:** RNF04  
-**RN Relacionadas:** RN01, RN02, RN03
+**RNF Relacionados:** RNF02  
 
 ---
 
-## UC03 — Enviar Feedback e Avaliação
+#### UC03 — Enviar Feedback e Avaliação
+
 **Ator Principal:** Cliente
 
 **Objetivo:** Avaliar a experiência de uso e enviar sugestões.
@@ -64,79 +63,76 @@
 **Pós-condições:** Feedback registrado e disponível para o Gestor.
 
 **Fluxo Principal:**
-1. O cliente acessa a área de avaliação (máximo 3 cliques - RNF06).
-2. O cliente escolhe uma nota/avaliação.
-3. O cliente escreve o comentário e confirma o envio.
-4. O sistema salva o feedback e registra o usuário.
+1. O cliente acessa a área de avaliação.
+2. O cliente escolhe uma nota/avaliação sobre seu lote.
+3. O cliente escreve o comentário com sugestões ou reclamações (máximo 2000 caracteres).
+4. O cliente confirma o envio.
+5. O sistema salva o feedback em tempo real no Firebase.
 
-**RF Relacionados:** RF05  
-**RNF Relacionados:** RNF06  
-**RN Relacionadas:** RN08
+**RF Relacionados:** RF08  
 
 ---
 
-## UC04 — Abrir Chamado / Reclamação
-**Ator Principal:** Cliente
+#### UC04 — Visualizar Feedbacks (Gestor)
 
-**Objetivo:** Registrar um problema técnico ou reclamação detalhada.
+**Ator Principal:** Gestor
 
-**Pré-condições:** Cliente autenticado no aplicativo.
+**Objetivo:** Monitorar feedbacks recebidos em tempo real.
 
-**Pós-condições:** Chamado registrado com status "Pendente" (RN07).
+**Pré-condições:** Gestor autenticado.
+
+**Pós-condições:** Lista de feedbacks atualizada automaticamente.
 
 **Fluxo Principal:**
-1. O cliente acessa a central de atendimento.
-2. O cliente preenche obrigatoriamente a "Descrição do ocorrido" (RN06).
-3. O sistema registra o chamado com data, hora e status inicial.
-4. O sistema gera um protocolo de confirmação.
+1. O gestor acessa a tela de feedbacks.
+2. O sistema exibe lista de feedbacks em tempo real via Firestore.
+3. O gestor filtra por status (novo, lido, em resolução, resolvido).
+4. O gestor abre detalhes completos de um feedback.
+5. O gestor pode alterar o status do feedback.
 
-**Fluxos Alternativos:**
-- **A1 — Descrição vazia:** o sistema impede o envio e alerta sobre a obrigatoriedade do campo.
-
-**RF Relacionados:** RF06  
-**RNF Relacionados:** RNF06  
-**RN Relacionadas:** RN06, RN07
+**RF Relacionados:** RF09, RF10, RF11  
 
 ---
 
-## UC05 — Consultar Catálogo e Fichas Técnicas
-**Ator Principal:** Usuário (Qualquer perfil)
+#### UC05 — Visualizar Dashboard
 
-**Objetivo:** Visualizar detalhes dos produtos ou serviços oferecidos.
+**Ator Principal:** Gestor
 
-**Pré-condições:** Nenhuma específica.
+**Objetivo:** Ver métricas gerenciais do sistema.
 
-**Pós-condições:** Informações técnicas exibidas na tela.
+**Pré-condições:** Gestor autenticado.
 
-**Fluxo Principal:**
-1. O usuário acessa o menu de Catálogo.
-2. O sistema lista os itens disponíveis.
-3. O usuário seleciona um item específico.
-4. O sistema carrega a ficha técnica detalhada em até 2 segundos (RNF01).
-
-**RF Relacionados:** RF07  
-**RNF Relacionados:** RNF01
-
----
-
-## UC06 — Gerenciar Dashboard e Chamados
-**Ator Principal:** Gestor / Administrador
-
-**Objetivo:** Monitorar métricas, feedbacks e gerir as demandas dos clientes.
-
-**Pré-condições:** Usuário autenticado com perfil "Gestor" ou "Administrador" (RN05).
-
-**Pós-condições:** Visualização atualizada das métricas e status dos chamados.
+**Pós-condições:** Dashboard com métricas mock exibido.
 
 **Fluxo Principal:**
 1. O gestor acessa a tela de Dashboard.
-2. O sistema exibe métricas de feedback e lista de chamados pendentes.
-3. O gestor visualiza os detalhes dos chamados e feedbacks.
-4. O gestor pode alterar o status de um chamado ou publicar avisos no mural.
+2. O sistema exibe métricas hardcoded (feedbacks, satisfação, chamados).
+3. O gestor visualiza gráficos e indicadores de performance.
+
+**RF Relacionados:** RF15  
+
+---
+
+#### UC06 — Formulário de Chamados
+
+**Ator Principal:** Cliente
+
+**Objetivo:** Visualizar e preencher formulário de criação de chamado.
+
+**Pré-condições:** Cliente autenticado.
+
+**Pós-condições:** Formulário exibido (dados não salvos no Firebase).
+
+**Fluxo Principal:**
+1. O cliente acessa a central de atendimento.
+2. O cliente preenche lote, descrição, categoria e evidências.
+3. O cliente confirma envio.
+4. O sistema exibe confirmação mock (não salva dados).
 
 **Fluxos Alternativos:**
-- **A1 — Usuário comum tenta acessar:** o sistema bloqueia o acesso e exibe erro de permissão.
+- **A1 — Descrição vazia:** O sistema impede envio e alerta obrigatoriedade.
 
-**RF Relacionados:** RF08, RF09, RF10  
-**RNF Relacionados:** RNF01  
-**RN Relacionadas:** RN05, RN07, RN08
+**RF Relacionados:** RF16  
+
+---
+
